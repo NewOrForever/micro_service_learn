@@ -1,0 +1,18 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name: provider-demo
+
+  cloud:
+    # 配置nacos
+    nacos:
+      discovery:
+        server-addr: 192.168.65.228:8848
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: *

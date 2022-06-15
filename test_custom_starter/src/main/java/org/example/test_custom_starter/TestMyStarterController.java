@@ -1,7 +1,6 @@
 package org.example.test_custom_starter;
 
 import com.autoconfigurer.custom.IndexController;
-import com.my.autoconfigurer.MyTestBean;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootVersion;
@@ -29,8 +28,8 @@ public class TestMyStarterController implements ApplicationContextAware {
 
     // @ConditionalOnProperty("my.test.name") --> 配置文件需要有这个配置否则stater中的MyAutoConfiguration排除不会导进来
     // 那么在MyAutoConfiguration中配置的Bean也就不生效
-    @Autowired
-    private MyTestBean myTestBean;
+//    @Autowired
+//    private MyTestBean myTestBean;
 
     @RequestMapping("/test")
     public void test() {
@@ -54,7 +53,7 @@ public class TestMyStarterController implements ApplicationContextAware {
 //            }
 //        }
 
-        System.out.println(myTestBean);
+//        System.out.println(myTestBean);
     }
 
     @Override
