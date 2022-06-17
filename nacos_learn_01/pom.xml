@@ -20,5 +20,11 @@
     </dependency>
   </dependencies>
 
+  <modules>
+    <module>consumer-demo</module>
+    <module>provider-demo</module>
+    <module>mall-order-provider</module>
+  </modules>
+
 
 </project>

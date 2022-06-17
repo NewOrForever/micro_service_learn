@@ -1,21 +1,19 @@
 server:
-  port: 8100
-
+  port: 8200
 spring:
-  application:
-    name: mall-order
   cloud:
     nacos:
       discovery:
         server-addr: 192.168.65.228:8848
-        ephemeral: false
+  application:
+    name: mall-user
 
   #数据库配置
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/ms_order?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+      url: jdbc:mysql://localhost:3306/ms_user?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
       username: root
       password: root
       initial-size: 10
