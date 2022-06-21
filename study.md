@@ -46,3 +46,61 @@
     org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
     com.autoconfigurer.custom.HelloAutoConfiguration
     ```
+
+## Ribbon学习
+### 自定义一个负载均衡拦截器（模仿LoadBalancerAutoConfiguration）
+1. 创建一个@MyLoadBalanced注解
+```
+@Target({ ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD })
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Inherited
+@Qualifier // core
+public @interface MyLoadBalanced {
+}
+```
+2. 创建一个拦截器实现ClientHttpRequestInterceptor，实现intercept方法
+```
+@Override
+public ClientHttpResponse intercept(final HttpRequest request, final byte[] body,
+                                    final ClientHttpRequestExecution execution) throws IOException {
+    final URI originalUri = request.getURI();
+    String serviceName = originalUri.getHost();
+    Assert.state(serviceName != null,
+            "Request URI does not contain a valid hostname: " + originalUri);
+    return this.loadBalancer.execute(serviceName,
+            this.requestFactory.createRequest(request, body, execution));
+}
+```
+3. 写一个配置类将拦截器配置进来添加到RestTemplate
+```
+@MyLoadBalanced // 这样写就只会注入有@MyLoadBalanced注解的RestTemplate进来
+@Autowired(required = false)
+private List<RestTemplate> restTemplates = Collections.emptyList();
+
+@Bean
+public MyLoadBalancerInterceptor myLoadBalancerInterceptor(LoadBalancerClient loadBalancerClient,
+                                                           LoadBalancerRequestFactory loadBalancerRequestFactory) {
+    return new MyLoadBalancerInterceptor(loadBalancerClient, loadBalancerRequestFactory);
+}
+
+/**
+ * spring 扩展点 - 在所有的非懒加载单例bean都加载完成之后会去执行
+ * @see  SmartInitializingSingleton
+ * @param myLoadBalancerInterceptor
+ * @return
+ */
+@Bean
+public SmartInitializingSingleton myLoadBalancerAfterSingletonInitial(final MyLoadBalancerInterceptor myLoadBalancerInterceptor) {
+    return new SmartInitializingSingleton() {
+        @Override
+        public void afterSingletonsInstantiated() {
+            for (RestTemplate restTemplate : MyLoadBalancerAutoConfiguration.this.restTemplates) {
+                List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>(restTemplate.getInterceptors());
+                interceptors.add(myLoadBalancerInterceptor);
+                restTemplate.setInterceptors(interceptors);
+            }
+        }
+    };
+}
+```

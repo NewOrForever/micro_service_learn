@@ -24,6 +24,8 @@
     <module>consumer-demo</module>
     <module>provider-demo</module>
     <module>mall-order-provider</module>
+    <module>mall-user-consumer</module>
+    <module>spring-cloud-load-balancer-demo</module>
   </modules>
 
 

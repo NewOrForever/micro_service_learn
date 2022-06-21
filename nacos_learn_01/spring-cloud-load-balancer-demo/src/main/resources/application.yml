@@ -1,0 +1,20 @@
+server:
+  port: 8400
+spring:
+  application:
+    name: cloud-load-balancer
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+    # 不使用ribbon，这是pom文件中nacos的starter没配出ribbon的话可以在这里这样配置
+    loadbalancer:
+      ribbon:
+        enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+

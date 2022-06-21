@@ -80,7 +80,7 @@ public class RibbonController {
 
     @Bean
     //@LoadBalanced
-    @MyLoadBalanced
+    @MyLoadBalanced // 使用了自定义的负载均衡注解
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }

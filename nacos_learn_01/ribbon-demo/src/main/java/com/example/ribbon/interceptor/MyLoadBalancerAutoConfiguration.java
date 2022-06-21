@@ -45,37 +45,30 @@ public class MyLoadBalancerAutoConfiguration {
      * @param myLoadBalancerInterceptor
      * @return
      */
-//    @Bean
-//    public SmartInitializingSingleton myLoadBalancerAfterSingletonInitial(final MyLoadBalancerInterceptor myLoadBalancerInterceptor) {
-//        return new SmartInitializingSingleton() {
-//            @Override
-//            public void afterSingletonsInstantiated() {
-//                for (RestTemplate restTemplate : MyLoadBalancerAutoConfiguration.this.restTemplates) {
-//                    List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>(restTemplate.getInterceptors());
-//                    interceptors.add(myLoadBalancerInterceptor);
-//                    restTemplate.setInterceptors(interceptors);
-//                }
-//            }
-//        };
-//    }
-
-
-    /**
-     * 不用上面的SmartInitializingSingleton方式的话也可以使用RestTemplateCustomizer这个方式
-     * LoadBalancerAutoConfiguration中模仿一下啊
-     * 自动装配的类在我们自定义的Bean之后加载（Deffred）
-     * @param myLoadBalancerInterceptor
-     * @return
-     */
     @Bean
-    public RestTemplateCustomizer myRestTemplateCustomizer(
-            final MyLoadBalancerInterceptor myLoadBalancerInterceptor) {
-        return restTemplate -> {
-            List<ClientHttpRequestInterceptor> list = new ArrayList<>(
-                    restTemplate.getInterceptors());
-            list.add(myLoadBalancerInterceptor);
-            restTemplate.setInterceptors(list);
+    public SmartInitializingSingleton myLoadBalancerAfterSingletonInitial(final MyLoadBalancerInterceptor myLoadBalancerInterceptor) {
+        return new SmartInitializingSingleton() {
+            @Override
+            public void afterSingletonsInstantiated() {
+                for (RestTemplate restTemplate : MyLoadBalancerAutoConfiguration.this.restTemplates) {
+                    List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>(restTemplate.getInterceptors());
+                    interceptors.add(myLoadBalancerInterceptor);
+                    restTemplate.setInterceptors(interceptors);
+                }
+            }
         };
     }
+
+
+//    @Bean
+//    public RestTemplateCustomizer myRestTemplateCustomizer(
+//            final MyLoadBalancerInterceptor myLoadBalancerInterceptor) {
+//        return restTemplate -> {
+//            List<ClientHttpRequestInterceptor> list = new ArrayList<>(
+//                    restTemplate.getInterceptors());
+//            list.add(myLoadBalancerInterceptor);
+//            restTemplate.setInterceptors(list);
+//        };
+//    }
 
 }
