@@ -104,3 +104,8 @@ public SmartInitializingSingleton myLoadBalancerAfterSingletonInitial(final MyLo
     };
 }
 ```
+
+## feign学习
+### 使用
+
+### 自定义拦截器

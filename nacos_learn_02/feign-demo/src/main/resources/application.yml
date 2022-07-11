@@ -1,0 +1,71 @@
+server:
+  port: 8500
+
+
+spring:
+  application:
+    name: feign-demo
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.65.228:8848
+
+
+
+
+logging:
+  level:
+    com.example.feign.service: debug
+
+feign:
+  client:
+    config:
+      # 局部配置
+      # 对应服务名称
+      mall-order:
+        # 这个属性名其实你点进去看就会发现就是FeignClientConfiguration的属性名
+        loggerLevel: FULL
+        # 使用feign原生注解，推荐使用springmvc
+#        contract: feign.Contract.Default
+        requestInterceptors[0]: com.example.feign.interceptor.MyRequestInterceptor
+        # 连接超时时间，默认2s
+        connectTimeout: 5000
+        # 请求处理超时时间，默认5s
+        readTimeout: 5000
+        # 编码解码器局部配置
+        encoder: feign.jackson.JacksonEncoder
+        decoder: feign.jackson.JacksonDecoder
+
+  # 可以去看下FeignAutoConfiguration
+  # 不使用httpclient，默认是true的，像我在pom中导入了httpclient和okhttpclient，如果是
+  # 要使用okhttpclient的话就得将httpclient关掉
+#  httpclient:
+#    enabled: false
+#  # 开启okhttpclient
+#  okhttp:
+#    enabled: true
+  # 可以看下FeignAcceptGzipEncodingAutoConfiguration
+  # 当feign的http client不是okhttp3的时候压缩才会生效
+  compression:
+    request:
+      enabled: true
+      mime-types: text/xml,application/xml,application/json
+      # 最小压缩值
+      min-request-size: 2048
+    response:
+      enabled: true
+
+
+
+
+ribbon:
+  eager-load:
+    enabled: true
+    clients: mall-order
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+

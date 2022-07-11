@@ -1,0 +1,28 @@
+#debug: true
+server:
+  port: 8600
+
+spring:
+  application:
+    name: dubbo-consumer
+  main:
+    # Spring Boot2.1及更高的版本需要设定，bean允许覆盖
+    allow-bean-definition-overriding: true
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.65.228:8848
+
+dubbo:
+  cloud:
+    subscribed-services: dubbo-provider
+  scan:
+    base-packages: com.example.dubbo.user.service
+  protocol:
+    name: dubbo
+    # dubbo 协议端口（ -1 表示自增端口，从 20880 开始）
+    port: -1
+#  registry:
+#    #挂载到 Spring Cloud 注册中心  高版本可选
+#    address: spring-cloud://192.168.65.228:8848
+

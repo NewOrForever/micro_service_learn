@@ -21,6 +21,7 @@
     <module>custom-spring-boot-starter</module>
     <module>custom-spring-boot-starter-autoconfigurer</module>
     <module>nacos_learn_01</module>
+    <module>nacos_learn_02</module>
   </modules>
 
   <properties>
