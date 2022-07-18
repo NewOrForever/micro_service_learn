@@ -22,7 +22,7 @@
             <artifactId>spring-cloud-starter-loadbalancer</artifactId>
         </dependency>
 
-        <!--nscos的starter中依赖了ribbon需要排除-->
+        <!--nacos的starter中依赖了ribbon需要排除-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>

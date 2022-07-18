@@ -12,7 +12,6 @@ spring:
 
 
 
-
 logging:
   level:
     com.example.feign.service: debug
@@ -35,6 +34,7 @@ feign:
         # 编码解码器局部配置
         encoder: feign.jackson.JacksonEncoder
         decoder: feign.jackson.JacksonDecoder
+
 
   # 可以去看下FeignAutoConfiguration
   # 不使用httpclient，默认是true的，像我在pom中导入了httpclient和okhttpclient，如果是
