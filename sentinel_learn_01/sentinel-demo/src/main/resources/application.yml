@@ -1,10 +1,10 @@
 server:
   port: 8201
 spring:
-  cloud:
-    nacos:
-      discovery:
-        server-addr: 192.168.65.228:8848
+#  cloud:
+#    nacos:
+#      discovery:
+#        server-addr: locahost:8848
   application:
     name: sentinel-demo
 
