@@ -17,6 +17,26 @@
             <artifactId>sentinel-core</artifactId>
             <version>1.8.0</version>
         </dependency>
+        <!--sentinel切面支持-->
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-annotation-aspectj</artifactId>
+            <version>1.8.0</version>
+        </dependency>
+
+        <!--客户端需要引入 Transport 模块来与 Sentinel 控制台进行通信-->
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-transport-simple-http</artifactId>
+            <version>1.8.0</version>
+        </dependency>
+
+        <!--Spring Cloud Alibaba整合Sentinel-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+        </dependency>
+
     </dependencies>
 
     <modules>

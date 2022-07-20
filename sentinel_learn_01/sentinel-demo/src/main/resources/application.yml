@@ -1,12 +1,20 @@
 server:
   port: 8201
 spring:
-#  cloud:
-#    nacos:
-#      discovery:
-#        server-addr: locahost:8848
+  cloud:
+    nacos:
+      discovery:
+        server-addr: locahost:8848
+
+    # sentinel 控制台
+    sentinel:
+      transport:
+        dashboard:
+
+
   application:
     name: sentinel-demo
+
 
   #数据库配置
   datasource:
@@ -65,4 +73,6 @@ management:
     web:
       exposure:
         include: '*'
+
+
 

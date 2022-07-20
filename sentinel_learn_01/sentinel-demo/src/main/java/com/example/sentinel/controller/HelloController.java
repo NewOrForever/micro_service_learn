@@ -20,7 +20,8 @@ import java.util.List;
 /**
  * ClassName:HelloController
  * Package:com.example.sentinel.controller
- * Description:
+ * Description: sentinel原生使用
+ * 核心：定义资源 -> 定义规则 -> 校验规则是否生效
  *
  * @Date:2022/7/19 16:42
  * @Author:qs@1.com
