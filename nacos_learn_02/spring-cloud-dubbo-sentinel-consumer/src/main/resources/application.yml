@@ -1,0 +1,30 @@
+#debug: true
+server:
+  port: 8001
+
+spring:
+  application:
+    name: dubbo-sentinel-consumer
+  main:
+    # Spring Boot2.1及更高的版本需要设定，bean允许覆盖
+    allow-bean-definition-overriding: true
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+
+    sentinel:
+      transport:
+        dashboard: localhost:8080
+
+dubbo:
+  cloud:
+    subscribed-services: dubbo-sentinel-provider
+  protocol:
+    name: dubbo
+    # dubbo 协议端口（ -1 表示自增端口，从 20880 开始）
+    port: -1
+#  registry:
+#    #挂载到 Spring Cloud 注册中心  高版本可选
+#    address: spring-cloud://192.168.65.228:8848
+

@@ -1,4 +1,8 @@
 #debug: true
+server:
+  port: 8005
+
+
 dubbo:
   scan:
     base-packages: com.example.dubbo.user.service
@@ -6,7 +10,7 @@ dubbo:
     name: dubbo
     # dubbo 协议端口（ -1 表示自增端口，从 20880 开始）
     port: -1
-  registry:
+#  registry:
     #挂载到 Spring Cloud 注册中心  高版本可选
 #    address: spring-cloud://192.168.65.228:8848
 #    address: nacos://192.168.65.228:8848
@@ -21,12 +25,10 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: 192.168.65.228:8848
+        server-addr: localhost:8848 #192.168.65.228:8848
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: root
     url: jdbc:mysql://localhost:3306/ms_user?serverTimezone=UTC&characterEncoding=utf8&useUnicode=true&useSSL=false
-
-

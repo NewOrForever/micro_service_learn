@@ -15,16 +15,17 @@
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-dubbo</artifactId>
         </dependency>
-        <!--dubbo2.7.13启动报错，需要加下面的依赖-->
+        <!--dubbo2.7.13启动报错，需要加下面的依赖 spring-context-support，我后来改了下版本低一点的，这个得注释掉，我在consumer
+        端加了这个一直报错啊-->
 <!--        spring-boot：2.3.12.RELEASE-->
 <!--        spring-cloud-alibaba：2.2.7.RELEASE-->
 <!--        spring-cloud：Hoxton.SR12-->
 <!--        nacos：2.0.3-->
-        <dependency>
-            <groupId>com.alibaba.spring</groupId>
-            <artifactId>spring-context-support</artifactId>
-            <version>1.0.11</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.alibaba.spring</groupId>-->
+<!--            <artifactId>spring-context-support</artifactId>-->
+<!--            <version>1.0.11</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>mysql</groupId>

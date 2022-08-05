@@ -1,0 +1,72 @@
+#debug: true
+
+server:
+  port: 8000
+
+
+dubbo:
+  scan:
+    base-packages: com.example.dubbo.user.service
+  protocol:
+    name: dubbo
+    # dubbo 协议端口（ -1 表示自增端口，从 20880 开始）
+    port: -1
+#  registry:
+    #挂载到 Spring Cloud 注册中心  高版本可选
+#    address: spring-cloud://192.168.65.228:8848
+#    address: nacos://192.168.65.228:8848
+
+
+spring:
+  application:
+    name: dubbo-sentinel-provider
+  main:
+    # Spring Boot2.1及更高的版本需要设定，bean允许覆盖
+    allow-bean-definition-overriding: true
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+    # sentinel 控制台地址
+    sentinel:
+      transport:
+        dashboard: localhost:8080
+
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      # useSSL=false 没配置这里竟然报错了，连不上
+      url: jdbc:mysql://localhost:3306/ms_user?serverTimezone=UTC&characterEncoding=utf8&useUnicode=true&useSSL=false
+      username: root
+      password: root
+      initial-size: 10
+      max-active: 100
+      min-idle: 10
+      max-wait: 60000
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      stat-view-servlet:
+        enabled: true
+        url-pattern: /druid/*
+      filter:
+        stat:
+          log-slow-sql: true
+          slow-sql-millis: 1000
+          merge-sql: false
+        wall:
+          config:
+            multi-statement-allow: true
+
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'

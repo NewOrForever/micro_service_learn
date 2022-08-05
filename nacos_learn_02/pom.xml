@@ -21,6 +21,10 @@
     <modules>
         <module>feign-demo</module>
         <module>spring-cloud-dubbo-provider</module>
+        <module>spring-cloud-dubbo-consumer</module>
+        <module>spring-cloud-dubbo-service</module>
+        <module>spring-cloud-dubbo-sentinel-provider</module>
+        <module>spring-cloud-dubbo-sentinel-consumer</module>
     </modules>
 
 

@@ -109,3 +109,132 @@ public SmartInitializingSingleton myLoadBalancerAfterSingletonInitial(final MyLo
 ### 使用
 
 ### 自定义拦截器
+
+## sentinel学习
+### 单独用（具体可以看sentinel-demo）
+核心代码（try ...  catch(BlockException)）：
+```
+    @RequestMapping("/demo")
+    public String demo() {
+        Entry entry = null;
+        try {
+            // 资源名可使用任意有业务语义的字符串，比如方法名、接口名或其它可唯一标识的字符串
+            entry = SphU.entry(RESOURCE_NAME);
+            // 被保护的业务逻辑 - 实际就是给业务逻辑做个before的切面
+            String str = "hello world";
+            logger.info("----------------> {}", str);
+
+            return str;
+        } catch (BlockException e) {
+            // 资源访问阻止，被限流或被降级  Sentinel定义异常  流控规则，降级规则，热点参数规则。。。。  服务降级(降级规则)
+            // 进行相应的处理操作
+            logger.info("block!");
+            return "被流控啦！";
+        } catch (Exception ex) {
+            // 若需要配置降级规则，需要通过这种方式记录业务异常  RuntimeException  服务降级  mock  feign:fallback
+            Tracer.traceEntry(ex, entry);
+        } finally {
+            if (entry != null) {
+                entry.exit();
+            }
+        }
+
+        return null;
+    }
+```
+- 引入依赖
+- @Bean SentinelResourceAspect
+- @SentinelResource
+- 控制台配置流控规则
+
+### spring cloud alibaba 整合（具体可看sentinel-springcloud-demo）
+- 引入依赖
+- 控制台配置流控规则
+- @SentinelResource注解可以不用了，使用sentinel默认会使用spring mvc的mapping，然后在preHandler的时候去进行BlockException限流异常的处理
+
+### sentinel配合控制台功能的测试 （看 sentinel_learn_01 的UserController）
+
+### RestTemplate 整合sentinel （看sentinel-ribbon-demo）
+1. 引入依赖
+2. 配置类
+```
+    @Bean
+    @LoadBalanced
+    @SentinelRestTemplate(blockHandlerClass = RestSentinelExceptionUtil.class, blockHandler = "handlerBlockException",
+            fallbackClass = RestSentinelExceptionUtil.class, fallback = "fallback")
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+```
+3. 异常处理 - 方法要static且参数和返回值不能错啊，具体可以看下**SentinelProtectInterceptor**的源码
+```
+public class RestSentinelExceptionUtil {
+    public static ClientHttpResponse handlerBlockException(HttpRequest request, byte[] body,
+            ClientHttpRequestExecution execution, BlockException ex) {
+        R r = R.error(-1, "========> 被限流啦");
+        try {
+            return new SentinelClientHttpResponse(new ObjectMapper().writeValueAsString(r));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static ClientHttpResponse fallback(HttpRequest request, byte[] body,
+            ClientHttpRequestExecution execution, BlockException ex) {
+        R r = R.error(-1, "========> 被熔断降级啦");
+        try {
+            return new SentinelClientHttpResponse(new ObjectMapper().writeValueAsString(r));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+}
+```
+4. 配置文件
+```
+# 这个其实可以不配，因为默认就是true的
+# true开启sentinel对resttemplate的支持，false则关闭 默认true
+resttemplate:
+  sentinel:
+    enabled: true
+
+```
+
+### feign 整合sentinel
+1. 引入依赖（@EnableFeignClients 不要忘记加哦）
+2. 配置文件 
+```
+# true开启sentinel对feign的支持，false则关闭 默认false
+feign:
+  sentinel:
+    enabled: true
+```
+3. 限流异常处理
+```
+@FeignClient(value = "order-service", path = "/order",
+         fallback = FeignFallBackOrderService.class
+        // fallbackFactory = FeignFallBackOrderServiceFactory.class
+        )
+  public interface OrderService {
+    @RequestMapping("/findOrderByUserId/{id}")
+    String findOrderByUserId(@PathVariable Integer id);
+}
+
+@Component
+public class FeignFallBackOrderService implements OrderService{
+    @Override
+    public String findOrderByUserId(Integer id) {
+        return "===============> BlockException ----> 服务限流->降级";
+    }
+}
+```
+- fallback：指定的类型需要实现当前接口且**需要是个bean**
+- fallbackFactory：指定的类型需要实现FallbackFactory且**需要是个bean**，泛型要传入当前接口类型
+- fallback和fallbackFactory同时指定的话，优先使用fallback（看下SentinelInvocationHandler的源码就知道了）
+- feign整合sentinel核心就是 SentinelFeign.Builder 和 SentinelInvocationHandler
+
+### dubbo 整合sentinel（看文档吧）
