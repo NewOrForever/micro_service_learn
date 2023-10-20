@@ -1,0 +1,11 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://appdb:sq@192.168.50.116:27017/appdb?authSource=appdb
+      #uri等同于下面的配置
+      #database: test
+      #host: 192.168.65.174
+      #port: 27017
+      #username: fox
+      #password: fox
+      #authentication-database: appdb

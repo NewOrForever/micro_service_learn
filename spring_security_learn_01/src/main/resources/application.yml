@@ -1,0 +1,32 @@
+spring:
+  security:
+    user:
+      name: sq
+      password: 123456
+      roles: ADMIN
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://123.60.150.23:33060/my_test?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8
+    username: root
+    password: root@33060
+    hikari:
+    minimum-idle: 5
+    idle-timeout: 600000
+    maximum-pool-size: 10
+    auto-commit: true
+    pool-name: MyHikariCP
+    max-lifetime: 1800000
+    connection-timeout: 30000
+    connection-test-query: SELECT 1
+  redis:
+    host: 123.60.150.23
+    port: 6379
+    password: root@123456
+  session:
+    store-type: redis
+
+server:
+  servlet:
+    session:
+      timeout: 30s

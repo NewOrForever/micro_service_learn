@@ -56,8 +56,6 @@ feign:
       enabled: true
 
 
-
-
 ribbon:
   eager-load:
     enabled: true

@@ -24,6 +24,9 @@
     <module>nacos_learn_02</module>
     <module>sentinel_learn_01</module>
     <module>sentinel_learn_02</module>
+    <module>my-common</module>
+    <module>mongodb_learn_01</module>
+    <module>spring_security_learn_01</module>
   </modules>
 
   <properties>
