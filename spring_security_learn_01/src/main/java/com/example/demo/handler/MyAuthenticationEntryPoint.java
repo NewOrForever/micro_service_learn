@@ -20,10 +20,10 @@ import java.io.PrintWriter;
 public class MyAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setHeader("Content-Type", "application/json;charset=utf-8");
         PrintWriter out = response.getWriter();
-        out.write("{\"status\": 403,\"msg\":\"权限不足！\"}");
+        out.write("{\"status\": 403,\"msg\":\"授权失败！\"}");
         out.flush();
         out.close();
     }

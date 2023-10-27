@@ -27,6 +27,7 @@
     <module>my-common</module>
     <module>mongodb_learn_01</module>
     <module>spring_security_learn_01</module>
+    <module>spring_security_learn_02_auth2</module>
   </modules>
 
   <properties>

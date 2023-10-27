@@ -23,6 +23,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
@@ -168,6 +169,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/access2").access("hasAuthority('ADMIN')")
                 .anyRequest().authenticated(); // 任何请求，登录后才可以访问
 //                .and().csrf().disable(); // 关闭csrf防护
+
+        /**
+         *  会给 HttpSecurity#requestMatcher 的属性赋值
+         *  @see org.springframework.security.config.annotation.web.builders
+         *  >>> 该属性是用来匹配请求的，如果匹配成功，则执行该 HttpSecurity 的过滤器链 <<<
+         *  >>> 如果匹配失败，则不会执行该 HttpSecurity 的过滤器链，也就是不会进入 security 的过滤器链 <<<
+         *  @see FilterChainProxy#getFilters(HttpServletRequest)
+         *  @see DefaultSecurityFilterChain#matches(HttpServletRequest)
+         */
+//        http.requestMatchers().antMatchers("/user/**", "/admin/**");
 
         // 403（无权限）处理
         http.exceptionHandling()
