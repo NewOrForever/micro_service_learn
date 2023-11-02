@@ -1,0 +1,24 @@
+spring:
+  redis:
+    host: 123.60.150.23
+    port: 6379
+    password: root@123456
+
+server:
+  port: 8083
+  #防止Cookie冲突，冲突会导致登录验证不通过
+  servlet:
+    session:
+      cookie:
+        name: OAUTH2-CLIENT-SESSIONID${server.port}
+
+#与授权服务器对应的配置
+security:
+  oauth2:
+    client:
+      client-id: client
+      client-secret: 123123
+      user-authorization-uri: http://localhost:8081/oauth/authorize
+      access-token-uri:  http://localhost:8081/oauth/token
+    resource:
+      token-info-uri: http://localhost:8081/oauth/check_token

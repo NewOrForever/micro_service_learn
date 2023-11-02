@@ -1,0 +1,13 @@
+单点登录使用和测试：
+1. 同域单点登录（同一个一级域名通过不同的二级域名来区分 - 比如：a.test.com、b.test.com，或者端口号不一致）
+直接使用 spring_security_learn_02_auth2 中的代码，启动两个服务（端口号不一样 8081, 8082），然后访问其中一个服务(8081)进行授权登录拿到 token
+使用该 token 访问该服务（8081）的资源 /user/getCurrentUser，然后再使用该 token 访问另一个服务(8082)的资源 /user/getCurrentUser，发现可以访问成功，说明单点登录成功
+
+2. 跨域单点登录（不同的一级域名 - 比如：a.test.com、b.test2.com）
+spring_security_learn_02_auth2 开启作为 UAA 授权中心
+再开启 spring_security_learn_03_auth2_sso 作为单点登录的客户端（实际就是独立的网站）
+开两个服务：8083、8084
+并配置 cookie name: server.servlet.session.cookie.name  模拟不同的一级域名
+
+3. 登录成功后，token 何时会去授权中心校验？
+

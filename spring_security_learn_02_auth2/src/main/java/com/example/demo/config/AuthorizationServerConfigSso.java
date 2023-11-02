@@ -22,9 +22,9 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
  * @Date:2023/10/21 15:10
  * @Author:qs@1.com
  */
-//@Configuration
-//@EnableAuthorizationServer
-public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
+@Configuration
+@EnableAuthorizationServer
+public class AuthorizationServerConfigSso extends AuthorizationServerConfigurerAdapter {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -57,7 +57,14 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 // 刷新token有效时间
                 .refreshTokenValiditySeconds(864000)
                 // 重定向地址，用于授权成功后跳转
-                .redirectUris("http://www.baidu.com")
+//                .redirectUris("http://www.baidu.com")
+                .redirectUris("http://localhost:8083/login", "http://localhost:8084/login")
+                /**
+                 * 自动授权配置
+                 * true：如果用户已授权，则自动跳过授权页面，直接同意授权
+                 * false：如果用户已授权，则会跳转到授权页面
+                 */
+                .autoApprove(true)
                 // 授权范围
                 .scopes("all")
                 /**
@@ -68,7 +75,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                  * client_credentials：客户端模式
                  * refresh_token：更新令牌
                  */
-                .authorizedGrantTypes("authorization_code", "implicit", "password", "client_credentials", "refresh_token");
+                .authorizedGrantTypes("authorization_code");
 
     }
 
@@ -98,5 +105,11 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
          * @see AuthorizationServerSecurityConfiguration#configure(AuthorizationServerSecurityConfigurer)
          */
         security.allowFormAuthenticationForClients(); // 允许表单认证
+        /**
+         * @see AuthorizationServerSecurityConfiguration#configure(org.springframework.security.config.annotation.web.builders.HttpSecurity)
+         * @see AuthorizationServerSecurityConfigurer#getCheckTokenAccess() 默认 /oauth/check_token 接口是 denyAll() 的
+         * 单点登录时需要校验token，所以需要开放该接口
+         */
+        security.checkTokenAccess("permitAll()"); // 允许所有人请求check_token接口
     }
 }

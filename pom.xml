@@ -28,6 +28,7 @@
     <module>mongodb_learn_01</module>
     <module>spring_security_learn_01</module>
     <module>spring_security_learn_02_auth2</module>
+    <module>spring_security_learn_03_auth2_sso</module>
   </modules>
 
   <properties>

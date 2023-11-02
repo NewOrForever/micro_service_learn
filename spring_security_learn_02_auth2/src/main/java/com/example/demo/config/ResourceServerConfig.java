@@ -2,7 +2,10 @@ package com.example.demo.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.*;
@@ -14,6 +17,7 @@ import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * ClassName:AuthorizationServerConfigurerAdapter
@@ -40,9 +44,11 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                  * @see DefaultSecurityFilterChain#matches(HttpServletRequest)
                  *
                  * 怪不得我这里把 .and().requestMatchers().antMatchers("/user/**") 这行代码删掉后访问 /login 页面就失败了
-                 * 1. 先说下HttpSecurity 去匹配的顺序：
+                 * 1. 先说下HttpSecurity 去匹配的顺序 （注意：{@link WebSecurityConfigurerAdapter} 子类的 order 不能重复不然会<报错>的）：
+                 * @see WebSecurityConfiguration#setFilterChainProxySecurityConfigurer(ObjectPostProcessor, List)
+                 * #if (previousOrder != null && previousOrder.equals(order)) -> 有相同的 order 则抛错
                  * 授权（AuthorizationServerSecurityConfiguration 的order 为0）-> 资源（ResourceServerConfiguration 的order 为3）
-                 * -> WebSecurityConfig（自定义的 order 未设置，默认为 最大值）
+                 * -> WebSecurityConfig（自定义的 order 未设置，默认为 100 - {@link WebSecurityConfigurerAdapter}）
                  * 2. 各 HttpSecurity 的 requestMatcher 属性的值：
                  * WebSecurityConfig 默认使用了 {@link AnyRequestMatcher}，所以会匹配所有的请求去执行过滤器链
                  * ResourceServerConfiguration 默认使用了 {@link ResourceServerConfiguration.NotOAuthRequestMatcher} ，只要不是 oauth 的请求就会执行过滤器链
