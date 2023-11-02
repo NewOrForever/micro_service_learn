@@ -3,3 +3,9 @@ spring:
     host: 123.60.150.23
     port: 6379
     password: root@123456
+
+security:
+  oauth2:
+    client:
+      # 修改token有效期
+      access-token-validity-seconds: 3600

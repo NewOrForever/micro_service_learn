@@ -10,4 +10,13 @@ spring_security_learn_02_auth2 开启作为 UAA 授权中心
 并配置 cookie name: server.servlet.session.cookie.name  模拟不同的一级域名
 
 3. 登录成功后，token 何时会去授权中心校验？
-
+1. sso 客户端系统增加 session 过期时间的配置，设置的长一点
+server:
+  servlet:
+    session:
+      # 设置了 Session 的过期时间，单位为秒，这里设置为 6 小时，这里我为了测试session 未过期但是 token 过期后客户端系统能否正常访问
+      timeout: 21600
+2. token 过期后访问客户端系统接口 -> 发现能正常访问
+3. session 过期后访问客户端系统接口 -> 需要重新登录
+测试发现（request.getSession()获取到 session） session 未过期但是 token 显示已过期，客户端系统能正常访问，说明该
+跨域单点登录登录成功后不校验 token，只要 session 未过期就能正常访问
