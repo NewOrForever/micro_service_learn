@@ -24,6 +24,8 @@
     <module>nacos_learn_02</module>
     <module>sentinel_learn_01</module>
     <module>sentinel_learn_02</module>
+    <module>gateway_learn_01</module>
+    <module>gateway_learn_02</module>
   </modules>
 
   <properties>

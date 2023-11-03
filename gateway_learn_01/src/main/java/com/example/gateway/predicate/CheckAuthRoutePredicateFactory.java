@@ -21,11 +21,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.handler.predicate.AbstractRoutePredicateFactory;
 import org.springframework.cloud.gateway.handler.predicate.GatewayPredicate;
-import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 
 import javax.validation.constraints.NotNull;
-import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
@@ -35,7 +33,6 @@ import java.util.function.Predicate;
  * @Description 自定义断言
  * 注意：命名需要以 RoutePredicateFactory 结尾
  */
-@Component
 public class CheckAuthRoutePredicateFactory
         extends AbstractRoutePredicateFactory<CheckAuthRoutePredicateFactory.Config> {
     private static final Logger log = LoggerFactory.getLogger(CheckAuthRoutePredicateFactory.class);
@@ -60,7 +57,7 @@ public class CheckAuthRoutePredicateFactory
             @Override
             public boolean test(ServerWebExchange serverWebExchange) {
                 String access_token = serverWebExchange.getRequest().getHeaders().getFirst("access_token");
-                log.info("调用CheckAuthRoutePredicateFactory" + config.getName());
+                log.info("调用CheckAuthRoutePredicateFactory ----------> " + config.getName());
                 return StringUtils.equalsIgnoreCase(access_token, config.getName());
             }
 
