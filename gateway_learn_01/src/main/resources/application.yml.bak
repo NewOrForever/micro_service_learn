@@ -1,0 +1,70 @@
+server:
+  port: 8888
+spring:
+  application:
+    name: gateway-learn
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+
+    gateway:
+      # 是否开启网关，默认是true - 开启
+      enabled: true
+      discovery:
+        locator:
+          # 默认为false，设为true开启通过微服务创建路由的功能，即可以通过微服务名访问服务
+          # http://localhost:8888/mall-order/order/findOrderByUserId/1
+          enabled: false
+      # 跨域
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - DELETE
+              - PUT
+              - OPTION
+      routes:
+        - id: order-service
+          # lb://order-service -> 负载均衡协议，根据服务名进行负载均衡策略拿到服务实例地址
+          # http://localhost:8900 -> 直接指定服务实例
+          uri: lb://order-service
+          # @see org.springframework.cloud.gateway.handler.predicate.PathRoutePredicateFactory
+          # 可以定位进去到包下找其他的几个断言类
+          predicates:
+            - Path=/order/**
+            # 匹配在指定的日期时间之后发生的请求  入参是ZonedDateTime类型
+            # 还有Before、Between -> 可以具体去看相应的处理器
+            - After=2022-08-21T16:44:14.801+08:00[Asia/Shanghai]
+            - Cookie=username, sq
+
+            # Header匹配  请求中带有请求头名为 x-request-id，其值与 \d+ 正则表达式匹配
+            - Header=X-Request-Id, \d+
+            - Method=GET
+
+            # 查询的参数名为param（呆在url后面的哦），参数值满足这个正则表达式 green. -> green greet ...都可以
+            # 如果后面的参数值没写的话，就是只要满足有这个参数名就行了
+#            - Query=param, gree.
+            # 自定义的断言
+            - CheckAuth=sq
+          filters:
+            #  我们访问网关地址http://host:port/order/create时
+            #  若无StripPrefix过滤器时，gateway 发送请求到后台服务order-service的url就是http://order-service/order/create
+            #  若有StripPrefix过滤器时，gateway会根据StripPrefix=1所配的值（这里是1）去掉URL路径中的部分前缀（这里去掉一个前缀，即去掉order）
+            #  发送请求到后台服务order-service的url变成http://order-service/create -> 服务的@RequestMapping("/order/create" ---> "/create")
+            #  所以如果服务的@RequestMapping("/order/create")不变 ==> 访问网关地址就得是 -> http://host:port/order/order/create
+#            - StripPrefix=1 # 删除路径前缀
+            # 添加请求头
+            # @see org.springframework.cloud.gateway.filter.factory.AddRequestHeaderGatewayFilterFactory
+            # 有咩有发现：GatewayFilterFactory的前缀就是这个参数名 - 怪不得自定义的时候要有这个后缀
+            - AddRequestHeader=X-Request-color, blue
+            - AddRequestParameter=myParam, testparameter  # 添加请求参数
+            # 添加前缀 对应微服务需要配置context-path
+            # 访问的时候不需要手动去加上这个前缀，在过滤器中会自动加上
+#            - PrefixPath=/mall-order
+#            - RedirectTo=302, https://www.baidu.com # 重定向
+            - CheckAuth=authName, authValue
+
