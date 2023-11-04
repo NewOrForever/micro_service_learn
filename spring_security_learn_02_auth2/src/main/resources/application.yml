@@ -4,8 +4,10 @@ spring:
     port: 6379
     password: root@123456
 
-security:
-  oauth2:
-    client:
-      # 修改token有效期
-      access-token-validity-seconds: 3600
+# 也可以直接在 com.example.demo.config.AuthorizationServerConfig.configure(ClientDetailsServiceConfigurer)
+# 进行配置
+#security:
+#  oauth2:
+#    client:
+#      # 修改token有效期
+#      access-token-validity-seconds: 3600

@@ -1,0 +1,9 @@
+server:
+  port: 8900
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 123.60.150.23:8848
+  application:
+    name: order-server
