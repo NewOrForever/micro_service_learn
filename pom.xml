@@ -32,6 +32,7 @@
     <module>spring_security_learn_02_auth2</module>
     <module>spring_security_learn_03_auth2_sso</module>
     <module>spring_security_learn_04_cloud</module>
+    <module>spring_security_learn_05_jwt</module>
   </modules>
 
   <properties>

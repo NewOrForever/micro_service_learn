@@ -14,10 +14,12 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.security.oauth2.provider.client.ClientCredentialsTokenEndpointFilter;
 import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
-
+import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerSecurityConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import javax.sql.DataSource;
 
 /**
@@ -95,16 +97,31 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .tokenStore(tokenStore)  //指定token存储到redis
                 .reuseRefreshTokens(false)  //refresh_token是否重复使用
                 .userDetailsService(userDetailsService) //刷新令牌授权包含对用户信息的检查
-                .allowedTokenEndpointRequestMethods(HttpMethod.GET,HttpMethod.POST); //支持GET,POST请求
+                .allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST); //支持GET,POST请求
     }
-
 
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
-        //允许表单认证
+        /**
+         * 允许表单认证
+         * @see AuthorizationServerSecurityConfigurer#clientCredentialsTokenEndpointFilter(HttpSecurity)
+         * @see ClientCredentialsTokenEndpointFilter
+         */
+
         security.allowFormAuthenticationForClients()
-        // 配置校验token需要带入clientId 和clientSeret配置
-            .checkTokenAccess("isAuthenticated()");
+                /**
+                 * 配置校验token需要带入clientId 和clientSeret配置
+                 * 默认的 checkTokenAccess 属性是 denyAll()，所以默认是不允许校验 token 的
+                 * @see AuthorizationServerSecurityConfigurer#checkTokenAccess
+                 *
+                 * @see AuthorizationServerSecurityConfiguration#configure(HttpSecurity)
+                 *          http
+                 *         	.authorizeRequests()
+                 *             	.antMatchers(tokenEndpointPath).fullyAuthenticated()
+                 *             	.antMatchers(tokenKeyPath).access(configurer.getTokenKeyAccess())
+                 *             	.antMatchers(checkTokenPath).access(configurer.getCheckTokenAccess())
+                 */
+                .checkTokenAccess("isAuthenticated()");
     }
 }

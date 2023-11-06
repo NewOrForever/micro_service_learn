@@ -1,20 +1,29 @@
 package com.example.demo.config;
 
+import com.example.demo.JwtTokenEnhancer;
 import com.example.demo.service.UserServiceImpl;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.common.OAuth2RefreshToken;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerSecurityConfiguration;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.client.ClientCredentialsTokenEndpointFilter;
-import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.token.*;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * ClassName:AuthorizationServerConfigurerAdapter
@@ -26,7 +35,7 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
  */
 @Configuration
 @EnableAuthorizationServer
-public class AuthorizationServerConfigSso extends AuthorizationServerConfigurerAdapter {
+public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -59,14 +68,7 @@ public class AuthorizationServerConfigSso extends AuthorizationServerConfigurerA
                 // 刷新token有效时间
                 .refreshTokenValiditySeconds(864000)
                 // 重定向地址，用于授权成功后跳转
-//                .redirectUris("http://www.baidu.com")
-                .redirectUris("http://localhost:8083/login", "http://localhost:8084/login")
-                /**
-                 * 自动授权配置
-                 * true：如果用户已授权，则自动跳过授权页面，直接同意授权
-                 * false：如果用户已授权，则会跳转到授权页面
-                 */
-                .autoApprove(true)
+                .redirectUris("http://www.baidu.com")
                 // 授权范围
                 .scopes("all")
                 /**
@@ -77,7 +79,7 @@ public class AuthorizationServerConfigSso extends AuthorizationServerConfigurerA
                  * client_credentials：客户端模式
                  * refresh_token：更新令牌
                  */
-                .authorizedGrantTypes("authorization_code");
+                .authorizedGrantTypes("authorization_code", "implicit", "password", "client_credentials", "refresh_token");
 
     }
 
@@ -85,37 +87,64 @@ public class AuthorizationServerConfigSso extends AuthorizationServerConfigurerA
     private AuthenticationManager authenticationManagerBean;
     @Autowired
     private UserServiceImpl userServiceImpl;
+    /**
+     * RedisTokenStore 的 Bean 我没有注掉，所以这里需要指定一下
+     * 也可以在 JwtConfig 中 JwtTokenStore 的 Bean 使用 @Primary 注解
+     * 推荐还是使用 @Primary 注解，不然不知道又会那个配置类注入的 TokenStore 变成 RedisTokenStore 了
+     */
     @Autowired
+//    @Qualifier("jwtTokenStore")
     private TokenStore tokenStore;
+    @Autowired
+    private AccessTokenConverter jwtAccessTokenConverter;
+    @Autowired
+    private JwtTokenEnhancer jwtTokenEnhancer;
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         /**
          * @see org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerEndpointsConfiguration#init()
          */
+
+        /**
+         * 配置 jwt 内容增强 TokenEnhancer
+         * 使用  jwt 时 JwtAccessTokenConverter是必须的，且要放在 enhancer chain 的最后一个 -> 需要生成 token 字符串
+         * @see JwtAccessTokenConverter#encode(org.springframework.security.oauth2.common.OAuth2AccessToken, org.springframework.security.oauth2.provider.OAuth2Authentication)
+         * @see TokenEnhancerChain#enhance(org.springframework.security.oauth2.common.OAuth2AccessToken, org.springframework.security.oauth2.provider.OAuth2Authentication)
+         */
+        TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
+        List<TokenEnhancer> delegates = new ArrayList<>();
+        tokenEnhancerChain.setTokenEnhancers(delegates);
+        delegates.add(jwtTokenEnhancer);
+        delegates.add((JwtAccessTokenConverter)jwtAccessTokenConverter);
+
         endpoints
                 .authenticationManager(authenticationManagerBean) // 密码模式需要配置
                 .reuseRefreshTokens(false) // 刷新token, 每次刷新token都会重新生成一个refresh_token
                 .userDetailsService(userServiceImpl) // 刷新token需要配置
-                .tokenStore(tokenStore) // token存储方式 - redis
+                /**
+                 * 当 TokenStore bean 有多个时
+                 * 授权服务和资源服务都需要指定同一个 TokenStore
+                 */
+                .tokenStore(tokenStore) // token存储方式 - jwt
+                /**
+                 * 使用 jwt 时还需要配置 AccessTokenConverter
+                 * @see DefaultTokenServices#readAccessToken(String) 提取 token 中的信息
+                 * @see DefaultTokenServices#createAccessToken(OAuth2Authentication, OAuth2RefreshToken)
+                 * @see JwtAccessTokenConverter#encode(org.springframework.security.oauth2.common.OAuth2AccessToken, org.springframework.security.oauth2.provider.OAuth2Authentication)
+                 */
+                .accessTokenConverter(jwtAccessTokenConverter)
+                .tokenEnhancer(tokenEnhancerChain)
+
                 .allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST);
     }
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
         /**
-         * 允许表单认证
          * @see AuthorizationServerSecurityConfiguration#configure(AuthorizationServerSecurityConfigurer)
-         * @see AuthorizationServerSecurityConfigurer#clientCredentialsTokenEndpointFilter(HttpSecurity)
-         * @see ClientCredentialsTokenEndpointFilter
          */
-        security.allowFormAuthenticationForClients();
-        /**
-         * @see AuthorizationServerSecurityConfiguration#configure(org.springframework.security.config.annotation.web.builders.HttpSecurity)
-         * @see AuthorizationServerSecurityConfigurer#getCheckTokenAccess() 默认 /oauth/check_token 接口是 denyAll() 的
-         * 单点登录时需要校验token，所以需要开放该接口
-         * 置校验token需要带入clientId 和clientSeret配置
-         */
-        security.checkTokenAccess("permitAll()"); // 允许所有人请求check_token接口
+        security.allowFormAuthenticationForClients(); // 允许表单认证
     }
+
 }
