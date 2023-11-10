@@ -39,14 +39,13 @@ public class UmsMemberController {
     @Autowired
     private UmsMemberService memberService;
 
-
     @Autowired
     private RedisOpsExtUtil redisOpsUtil;
 
 
     @GetMapping("/verifyCode")
     public void generateImg(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        HappyCaptcha.require(req,resp)
+        HappyCaptcha.require(req, resp)
                 .style(CaptchaStyle.ANIM) //动画 or 图片
                 .type(CaptchaType.ARITHMETIC_ZH) // 中文简体加、减、乘、除
                 .build().finish();
@@ -59,7 +58,7 @@ public class UmsMemberController {
                               @RequestParam String password,
                               @RequestParam String verifyCode,
                               HttpServletRequest request) {
-//        if(!HappyCaptcha.verification(request, verifyCode, true)){
+//        if (!HappyCaptcha.verification(request, verifyCode, true)) {
 //            return CommonResult.failed("请填入正确的验证码");
 //        }
         TokenInfo tokenInfo = memberService.login(username, password);
@@ -69,18 +68,18 @@ public class UmsMemberController {
         Map<String, String> tokenMap = new HashMap<>();
         tokenMap.put("token", tokenInfo.getAccess_token());
         tokenMap.put("tokenHead", tokenHead);
-        tokenMap.put("refreshToken",tokenInfo.getRefresh_token());
+        tokenMap.put("refreshToken", tokenInfo.getRefresh_token());
         String memberIdStr = tokenInfo.getAdditionalInfo().get("memberId");
-        tokenMap.put("memberId",memberIdStr);
-        tokenMap.put("nickName",username);
+        tokenMap.put("memberId", memberIdStr);
+        tokenMap.put("nickName", username);
 
         /*用户登录成功后，将用户相关信息存入Redis，12小时后过期*/
         Long memberId = Long.valueOf(memberIdStr);
-//        UmsMember memberInfo = umsMemberCenterService.getMemberInfo(Long.valueOf(memberId));
-//        redisOpsUtil.set(RedisMemberPrefix.MEMBER_INFO_PREFIX+memberIdStr,memberInfo,60*60*12, TimeUnit.SECONDS);
+        UmsMember memberInfo = memberService.getById(memberId);
+        redisOpsUtil.set(RedisMemberPrefix.MEMBER_INFO_PREFIX + memberIdStr, memberInfo, 60 * 60 * 12, TimeUnit.SECONDS);
 //        List<UmsMemberReceiveAddress> addressList = memberReceiveAddressService.list(memberId);
-//        redisOpsUtil.putListAllRight(RedisMemberPrefix.MEMBER_ADDRESS_PREFIX+memberIdStr,addressList);
-        redisOpsUtil.expire(RedisMemberPrefix.MEMBER_ADDRESS_PREFIX+memberIdStr,60*60*12, TimeUnit.SECONDS);
+//        redisOpsUtil.putListAllRight(RedisMemberPrefix.MEMBER_ADDRESS_PREFIX + memberIdStr, addressList);
+//        redisOpsUtil.expire(RedisMemberPrefix.MEMBER_ADDRESS_PREFIX + memberIdStr, 60 * 60 * 12, TimeUnit.SECONDS);
 
         return CommonResult.success(tokenMap);
     }

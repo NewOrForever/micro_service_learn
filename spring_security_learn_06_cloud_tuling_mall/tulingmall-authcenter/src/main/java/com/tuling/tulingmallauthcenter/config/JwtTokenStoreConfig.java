@@ -2,6 +2,7 @@ package com.tuling.tulingmallauthcenter.config;
 
 import com.tuling.tulingmallauthcenter.enhancer.TulingTokenEnhancer;
 import com.tuling.tulingmallauthcenter.properties.JwtCAProperties;
+import com.tuling.tulingmallauthcenter.tokenStore.MyJwtTokenStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -33,6 +34,12 @@ public class JwtTokenStoreConfig {
     public TokenStore jwtTokenStore(){
         return new JwtTokenStore(jwtAccessTokenConverter());
     }
+
+//    @Bean
+//    @Primary
+//    public TokenStore jwtTokenStore(){
+//        return new MyJwtTokenStore(jwtAccessTokenConverter());
+//    }
 
     @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter(){
