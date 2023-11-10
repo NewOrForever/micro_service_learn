@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: tulingmall-gateway  #微服务的名称
+
+  cloud:
+    nacos:
+      config:
+        server-addr: 123.60.150.23:8848  #配置中心的地址
+        namespace: 134f2d84-d72d-410c-8559-4a425098d68d
+        # dataid 为 yml 的文件扩展名配置方式
+        # `${spring.application.name}.${file-extension:properties}`
+        file-extension: yml
+
+        #通用配置
+        shared-configs[0]:
+          data-id: tulingmall-nacos.yml
+          group: DEFAULT_GROUP
+          refresh: true
+
+  #profile粒度的配置
+  #`${spring.application.name}-${profile}.${file-extension:properties}`
+  profiles:
+    active: dev

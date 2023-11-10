@@ -1,0 +1,45 @@
+server:
+  port: 9900
+spring:
+  application:
+    name: tulingmall-authcenter
+  #配置nacos注册中心地址
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 123.60.150.23:8848  #注册中心地址
+        namespace: 134f2d84-d72d-410c-8559-4a425098d68d  #环境隔离
+  datasource:
+    url: jdbc:mysql://123.60.150.23:33060/tuling_mall_cloud_security?serverTimezone=GMT%2B8&useSSL=false&useUnicode=true&characterEncoding=UTF-8
+    username: root
+    password: root@33060
+    druid:
+      initial-size: 5 #连接池初始化大小
+      min-idle: 10 #最小空闲连接数
+      max-active: 20 #最大连接数
+      web-stat-filter:
+        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*" #不统计这些请求数据
+      stat-view-servlet: #访问监控网页的登录用户名和密码
+        login-username: druid
+        login-password: druid
+
+feign:
+  client:
+    config:
+      tulingmall-member:
+        # @see org.springframework.cloud.openfeign.ribbon.FeignLoadBalancer.execute 超时时间的配置覆盖
+        connectTimeout: 6000
+        readTimeout: 15000
+#        retryer: com.tuling.config.FeignRetryer
+# 参考 com.example.feign.FeignDemoApplication 配置文件
+#        requestInterceptors:
+#          - FeignBasicAuthRequestInterceptor
+
+
+tuling:
+  jwt:
+    keyPairName: jwt.jks
+    keyPairAlias: jwt
+    keyPairSecret: 123123
+    keyPairStoreSecret: 123123
+

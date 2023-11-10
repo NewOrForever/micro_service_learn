@@ -33,6 +33,7 @@
     <module>spring_security_learn_03_auth2_sso</module>
     <module>spring_security_learn_04_cloud</module>
     <module>spring_security_learn_05_jwt</module>
+    <module>spring_security_learn_06_cloud_tuling_mall</module>
   </modules>
 
   <properties>

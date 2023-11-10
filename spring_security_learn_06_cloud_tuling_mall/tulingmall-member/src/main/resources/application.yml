@@ -1,0 +1,73 @@
+server:
+  port: 8877
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: tulingmall-member
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 123.60.150.23:8848
+        namespace: 134f2d84-d72d-410c-8559-4a425098d68d
+
+    discovery: #discovery配置，设置流量染色的元数据
+      metadata:
+        group: discovery-group  #组名必须配置
+        version: 1.0   #指定版本号
+  datasource:
+    url: jdbc:mysql://123.60.150.23:33060/tl_mall_user?serverTimezone=GMT%2B8&useSSL=false&useUnicode=true&characterEncoding=UTF-8
+    username: root
+    password: root@33060
+    druid:
+      initial-size: 5 #连接池初始化大小
+      min-idle: 10 #最小空闲连接数
+      max-active: 20 #最大连接数
+      web-stat-filter:
+        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*" #不统计这些请求数据
+      stat-view-servlet: #访问监控网页的登录用户名和密码
+        login-username: druid
+        login-password: druid
+
+
+  # 选择redis为session存储
+  session:
+    store-type: redis
+  redis:
+    host: 123.60.150.23
+    port: 6379
+    database: 0
+    password: root@123456
+    lettuce:
+      pool:
+        max-active: 8 # 连接池最大连接数（使用负值表示没有限制）
+        max-wait: -1 # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-idle: 8 # 连接池中的最大空闲连接
+        min-idle: 0 # 连接池中的最小空闲连接
+      timeout: 3000ms # 连接超时时间（毫秒）
+
+
+mybatis:
+  mapper-locations:
+    - classpath:dao/*.xml
+    - classpath*:com/**/mapper/*.xml
+
+jwt:
+  tokenHeader: Authorization #JWT存储的请求头
+  secret: mall-portal-secret #JWT加解密使用的密钥
+  expiration: 604800 #JWT的超期限时间(60*60*24)
+  tokenHead: bearer #JWT负载中拿到开头
+
+#自定义redis键值
+redis:
+  key:
+    prefix:
+      authCode: "portal:authCode:"
+      orderId: "portal:orderId:"
+    expire:
+      authCode: 90 # 验证码超期时间
+ribbon:
+  eager-load:
+    clients: tulingmall-promotion
+    enabled: true
