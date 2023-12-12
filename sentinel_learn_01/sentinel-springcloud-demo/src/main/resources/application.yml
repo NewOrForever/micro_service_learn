@@ -1,10 +1,13 @@
 server:
   port: 8202
 spring:
+  application:
+    name: sentinel-cloud-demo
+
   cloud:
     nacos:
       discovery:
-        server-addr: localhost:8848
+        server-addr: 123.60.150.23:8848
 
     # sentinel 控制台
     # @see https://github.com/alibaba/Sentinel/wiki/%E5%90%AF%E5%8A%A8%E9%85%8D%E7%BD%AE%E9%A1%B9
@@ -12,12 +15,50 @@ spring:
       web-context-unify: false
       transport:
         # sentinel控制台地址
-        dashboard: localhost:8080
+        dashboard: localhost:9000
         # 指定应用与Sentinel控制台交互的端口，应用本地会起一个该端口占用的HttpServer
-        # 默认是8719
-  #        port: 8719
-  application:
-    name: sentinel-cloud-demo
+        # 默认是8719 占用会自动 +1
+        #        port: 8719
+      datasource:
+        flow-rules:
+          nacos:
+            server-addr: 123.60.150.23:8848
+            #  -flow-rules 这个后缀每个规则都是固定的，需要和 SentinelDashboard 发布到 nacos 的规则文件名一致
+            # @see sentinel 的 dashboard 的源码 com.alibaba.csp.sentinel.dashboard.rule.nacos.NacosConfigUtil
+            dataId: ${spring.application.name}-flow-rules
+            groupId: SENTINEL_GROUP #注意groupId对应SentinelDashboard中的定义
+            data-type: json
+            rule-type: flow
+        degrade-rules:
+          nacos:
+            server-addr: 123.60.150.23:8848
+            dataId: ${spring.application.name}-degrade-rules
+            groupId: SENTINEL_GROUP
+            data-type: json
+            rule-type: degrade
+        param-flow-rules:
+          nacos:
+            server-addr: 123.60.150.23:8848
+            dataId: ${spring.application.name}-param-flow-rules
+            groupId: SENTINEL_GROUP
+            data-type: json
+            rule-type: param-flow
+        authority-rules:
+          nacos:
+            server-addr: 123.60.150.23:8848
+            dataId: ${spring.application.name}-authority-rules
+            groupId: SENTINEL_GROUP
+            data-type: json
+            rule-type: authority
+        system-rules:
+          nacos:
+            server-addr: 123.60.150.23:8848
+            dataId: ${spring.application.name}-system-rules
+            groupId: SENTINEL_GROUP
+            data-type: json
+            rule-type: system
+
+
 
 
   #数据库配置
@@ -25,9 +66,9 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/ms_user?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+      url: jdbc:mysql://123.60.150.23:33060/my_test?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
       username: root
-      password: root
+      password: root@33060
       initial-size: 10
       max-active: 100
       min-idle: 10

@@ -128,6 +128,11 @@ public class UserController {
     }
 
     /*********************热点参数限流************************/
+    /**
+     * 热点参数限流 需要使用 @SentinelResource 注解 - 走 aop 才能拿到 method 的参数
+     * @param id
+     * @return
+     */
     @RequestMapping("/userInfo/{id}")
     @SentinelResource(value = "userInfo",
     blockHandlerClass = CommonBlockHandler.class, blockHandler = "handlerUserInfoException",

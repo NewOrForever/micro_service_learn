@@ -1,5 +1,6 @@
 package com.example.sentinel.sentinel;
 
+import com.alibaba.cloud.sentinel.SentinelWebAutoConfiguration;
 import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.BlockExceptionHandler;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.csp.sentinel.slots.block.authority.AuthorityException;
@@ -22,6 +23,7 @@ import java.awt.*;
  * ClassName:MyBlockExceptionHandler
  * Package:com.example.sentinel.sentinel
  * Description: BlockExeptionhandler在springmvc的preHandler中使用
+ * @see SentinelWebAutoConfiguration#sentinelWebMvcConfig()
  *
  * @Date:2022/7/21 10:48
  * @Author:qs@1.com
