@@ -47,10 +47,11 @@
             <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
         </dependency>
         <!--- 解决流控链路不生效的问题-->
-        <dependency>
-            <groupId>com.alibaba.csp</groupId>
-            <artifactId>sentinel-web-servlet</artifactId>
-        </dependency>
+        <!--- 不建议使用该种方式：会引出更多别的问题 -->
+<!--        <dependency>-->
+<!--            <groupId>com.alibaba.csp</groupId>-->
+<!--            <artifactId>sentinel-web-servlet</artifactId>-->
+<!--        </dependency>-->
         <!--sentinel 持久化采用 Nacos 作为规则配置数据源-->
         <dependency>
             <groupId>com.alibaba.csp</groupId>

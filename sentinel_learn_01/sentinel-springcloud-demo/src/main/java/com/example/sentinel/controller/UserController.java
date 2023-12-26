@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
@@ -25,6 +27,23 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+
+    /**
+     * 并发测试
+     * 保障每个app只初始化一次 -> 用于 sentinel dashboard 的机器注册时初始化应用的规则的改造
+     */
+    private final ConcurrentHashMap<String, AtomicBoolean> appInitMap = new ConcurrentHashMap<>(16);
+    private static int test_count = 0;
+    @RequestMapping("/test")
+    public void test(String app) {
+        AtomicBoolean appHasInit = appInitMap.computeIfAbsent(app, v -> new AtomicBoolean(false));
+        System.out.println(">>>>>>>>>>>>>>>>" + appHasInit.get());
+        if (appHasInit.compareAndSet(false, true)) {
+            test_count++;
+            System.out.println("test_count=" + test_count );
+        }
+    }
 
     /**********************springmvc的preHandle中处理BlockException，不使用@SentinelResource注解了************************/
     @RequestMapping("/getUserInfoById/{id}")

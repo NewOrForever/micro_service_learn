@@ -1,10 +1,6 @@
 package com.example.sentinel.config;
 
-
-import com.alibaba.csp.sentinel.adapter.servlet.CommonFilter;
-import com.alibaba.csp.sentinel.adapter.servlet.callback.WebCallbackManager;
 import com.alibaba.csp.sentinel.annotation.aspectj.SentinelResourceAspect;
-import com.example.sentinel.sentinel.MyUrlBlockHandler;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

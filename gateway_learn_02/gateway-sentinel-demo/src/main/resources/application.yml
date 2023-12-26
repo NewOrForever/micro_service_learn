@@ -6,7 +6,7 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: localhost:8848
+        server-addr: 123.60.150.23:8848
 
     gateway:
       routes:
@@ -14,8 +14,29 @@ spring:
           uri: lb://order-service
           predicates:
             - Path=/order/**
+        # 看 sentinel_learn_01 -> sentinel-demo 项目，用来测试 sentinel gateway 限流
+        - id: sentinel-cloud-demo
+          uri: lb://sentinel-cloud-demo
+          predicates:
+              - Path=/sentinel/user/**
     sentinel:
       transport:
-        dashboard: localhost:8080
+        dashboard: localhost:9000
+      # sentinel 整合 nacos 配置中中心进行持久化
+      datasource:
+        gateway-flow-rules:
+          nacos:
+            server-addr: 123.60.150.23:8848
+            dataId: ${spring.application.name}-gateway-flow-rules
+            groupId: SENTINEL_GROUP
+            data-type: json
+            rule-type: gw-flow
+        gateway-api-rules:
+          nacos:
+            server-addr: 123.60.150.23:8848
+            dataId: ${spring.application.name}-gateway-api-rules
+            groupId: SENTINEL_GROUP
+            data-type: json
+            rule-type: gw-api-group
 
 
