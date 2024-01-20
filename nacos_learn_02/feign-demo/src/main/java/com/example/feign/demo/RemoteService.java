@@ -19,7 +19,7 @@ public interface RemoteService {
 
     @Headers({"Content-Type:application/json", "Accept:application/json"})
     @RequestLine("GET /order/findOrderByUserId/{user_id}")
-    R findOrderByUserId(@Param Integer user_id);
+    R findOrderByUserId(@Param("user_id") Integer userId);
 
     @Headers({"Content-Type:application/json", "Accept:application/json"})
     @RequestLine("POST /order/save")

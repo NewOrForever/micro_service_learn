@@ -34,6 +34,7 @@
     <module>spring_security_learn_04_cloud</module>
     <module>spring_security_learn_05_jwt</module>
     <module>spring_security_learn_06_cloud_tuling_mall</module>
+    <module>elastic_search_learn_01</module>
   </modules>
 
   <properties>
