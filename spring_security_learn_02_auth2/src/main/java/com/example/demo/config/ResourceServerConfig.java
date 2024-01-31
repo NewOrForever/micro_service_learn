@@ -43,6 +43,12 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                  * @see FilterChainProxy#getFilters(HttpServletRequest)
                  * @see DefaultSecurityFilterChain#matches(HttpServletRequest)
                  *
+                 * 注意：
+                 *  1. {@link FilterChainProxy#getFilters(HttpServletRequest)} 方法能够知道一个请求只会匹配一个过滤器链
+                 *  2. 请求会按照 HttpSecurity 的配置顺序去匹配，如果匹配成功，则执行该 HttpSecurity 的过滤器链
+                 *      比如 /oauth/token 先匹配{@link AuthorizationServerSecurityConfiguration} 的过滤器链，匹配成功则执行该过滤器链
+                 *      不匹配的话再匹配下个过滤器链
+                 *
                  * 怪不得我这里把 .and().requestMatchers().antMatchers("/user/**") 这行代码删掉后访问 /login 页面就失败了
                  * 1. 先说下HttpSecurity 去匹配的顺序 （注意：{@link WebSecurityConfigurerAdapter} 子类的 order 不能重复不然会<报错>的）：
                  * @see WebSecurityConfiguration#setFilterChainProxySecurityConfigurer(ObjectPostProcessor, List)
