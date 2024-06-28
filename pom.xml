@@ -36,6 +36,8 @@
     <module>spring_security_learn_06_cloud_tuling_mall</module>
     <module>elastic_search_learn_01</module>
     <module>spring_security_learn_04_json</module>
+    <module>rocketmq_learn_01</module>
+    <module>openapiutil</module>
   </modules>
 
   <properties>
