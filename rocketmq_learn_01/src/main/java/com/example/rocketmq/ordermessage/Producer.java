@@ -48,6 +48,7 @@ public class Producer {
                 // 创建消息
                 Message msg = new Message("TopicTest", tags[i % tags.length], "KEY" + i,
                         ("Hello RocketMQ Order Message" + i).getBytes(RemotingHelper.DEFAULT_CHARSET));
+                System.out.println("msg: " + new String(msg.getBody()));
                 // 发送消息
                 SendResult sendResult = producer.send(msg, new MessageQueueSelector() {
                     @Override
