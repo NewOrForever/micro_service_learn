@@ -19,9 +19,12 @@ package com.example.rocketmq.batch;
 
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.client.producer.SendResult;
+import org.apache.rocketmq.common.MixAll;
 import org.apache.rocketmq.common.message.Message;
+import org.apache.rocketmq.common.message.MessageBatch;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class SimpleBatchProducer {
@@ -36,9 +39,18 @@ public class SimpleBatchProducer {
         producer.setNamesrvAddr(DEFAULT_NAMESRVADDR);
         producer.start();
 
-        // If you just send messages of no more than 1MiB at a time, it is easy to use batch
-        // Messages of the same batch should have: same topic, same waitStoreMsgOK and no schedule support
-        // 消息总量不要超过1M
+        /**
+         * If you just send messages of no more than 1MiB at a time, it is easy to use batch
+         * Messages of the same batch should have: same topic, same waitStoreMsgOK and no schedule support
+         * 消息总量不要超过1M
+         *
+         * 使用批量消息时，创建的消息需要满足以下条件：
+         * 1. 同一个topic
+         * 2. 相同 waitStoreMsgOK
+         * 3. 不支持延时消息
+         * 4. 不支持以 {@link MixAll#RETRY_GROUP_TOPIC_PREFIX} 开头的topic
+         * 具体看 {@link MessageBatch#generateFromList(Collection)}
+         */
         List<Message> messages = new ArrayList<>();
         Message message1 = new Message(TOPIC, TAG, "OrderID001", "Hello world Batch Msg 0".getBytes());
         Message message2 = new Message(TOPIC, TAG, "OrderID002", "Hello world Batch Msg 1".getBytes());
@@ -47,6 +59,11 @@ public class SimpleBatchProducer {
         messages.add(message2);
         messages.add(message3);
 
+        /**
+         * 生产批量消息核心方法
+         * @see DefaultMQProducer#batch(Collection)
+         *  @see MessageBatch#generateFromList(Collection)
+         */
         SendResult sendResult = producer.send(messages);
         System.out.printf("%s", sendResult);
 
