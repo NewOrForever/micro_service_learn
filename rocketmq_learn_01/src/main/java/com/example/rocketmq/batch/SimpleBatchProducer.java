@@ -17,6 +17,7 @@
 
 package com.example.rocketmq.batch;
 
+import org.apache.rocketmq.client.Validators;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.common.MixAll;
@@ -50,6 +51,10 @@ public class SimpleBatchProducer {
          * 3. 不支持延时消息
          * 4. 不支持以 {@link MixAll#RETRY_GROUP_TOPIC_PREFIX} 开头的topic
          * 具体看 {@link MessageBatch#generateFromList(Collection)}
+         *
+         * 虽然官方文档说了消息总量不要超过1M，但是实际源码中对消息体的大小最大限制是 4M
+         * @see Validators#checkMessage(Message, DefaultMQProducer)
+         * @see DefaultMQProducer#maxMessageSize 默认最大消息体大小 4M
          */
         List<Message> messages = new ArrayList<>();
         Message message1 = new Message(TOPIC, TAG, "OrderID001", "Hello world Batch Msg 0".getBytes());
