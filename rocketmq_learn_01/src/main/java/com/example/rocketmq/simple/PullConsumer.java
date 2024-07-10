@@ -86,9 +86,13 @@ public class PullConsumer {
                                                 this.doSomething(msgs);
                                                 // update offset to broker
                                                 // TODO 位点更新失败会不会导致消息重复消费？如何保证位点更新成功？
+                                                // RocketMq 必然会有消息重复消费的问题，因为消费者组提交消费位点是异步的
+                                                // 通常情况下消费位点正常更新不会有重复消费的问题，但是如果消费者宕机或者新的消费者加入消费组，就会触发重平衡
+                                                // 重平衡可能会导致消费者分配到新的消息队列，如果之前的消费者还没有提交消费位点，那么新的消费者就会重复消费这些少量的消息
                                                 consumer.updateConsumeOffset(messageQueue, pullResult.getNextBeginOffset());
-                                                //print pull tps
+                                                // print pull tps
                                                 this.incPullTPS(topic, pullResult.getMsgFoundList().size());
+                                                // 拉模式下针对批量消费，如果某条消息消费失败，也只能重试整个批次消息，不能只重试某条消息不然会导致消费位点不一致
                                             }
                                             break;
                                         case OFFSET_ILLEGAL:
