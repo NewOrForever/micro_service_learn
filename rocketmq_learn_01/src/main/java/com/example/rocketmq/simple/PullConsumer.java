@@ -41,6 +41,8 @@ public class PullConsumer {
         consumer.setNamesrvAddr("192.168.50.65:9876");
         Set<String> topics = new HashSet<>();
         // You would better to register topics,It will use in rebalance when starting
+        // 这个topic 如果不注册的话，该topic和消费者组之间就没有订阅关系
+        // dashboard 的 topic 中不显示该消费者组
         topics.add("TopicTest");
         consumer.setRegisterTopics(topics);
         consumer.start();
