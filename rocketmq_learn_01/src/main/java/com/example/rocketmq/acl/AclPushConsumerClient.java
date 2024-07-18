@@ -44,14 +44,14 @@ import java.util.Set;
 public class AclPushConsumerClient extends AclBaseClient{
 
     public static void main(String[] args) throws MQClientException, InterruptedException {
-        // 打印 user.home
-        System.out.println(System.getProperty("user.home"));
         pushConsumer();
     }
 
     public static void pushConsumer() throws MQClientException {
-
-        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("groupC", getAclRPCHook(), new AllocateMessageQueueAveragely());
+        /**
+         * 如果消费者没有正常消费可以查看 acl 配置中该账号是否有对应的权限
+         */
+        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("groupB", getAclRPCHook(), new AllocateMessageQueueAveragely());
         consumer.setNamesrvAddr("192.168.50.65:9876");
         consumer.subscribe("AclTopicTest", "*");
         consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);

@@ -48,6 +48,9 @@ public class AclProducerClient extends AclBaseClient {
     }
 
     public static void producer() throws MQClientException {
+        /**
+         * 如果生产发送报错可以查看 acl 配置中该账号是否有对应的权限
+         */
         DefaultMQProducer producer = new DefaultMQProducer("AclConsumerGroup", getAclRPCHook());
         producer.setNamesrvAddr("192.168.50.65:9876");
         producer.start();
