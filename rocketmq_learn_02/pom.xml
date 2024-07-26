@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.example</groupId>
+        <artifactId>micro_service_learn</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>rocketmq_learn_02</artifactId>
+
+    <dependencies>
+
+        <!--
+        引入依赖时需要注意下版本，看下依赖包引入的 rocketmq 的版本
+        具体可以看下源码：https://github.com/apache/rocketmq-spring
+        对应的依赖的版本在 parent pom 中：https://github.com/apache/rocketmq-spring/blob/rocketmq-spring-all-2.2.2/rocketmq-spring-boot-parent/pom.xml
+        rocketmq-spring-boot-starter 2.2.2 -> rocketmq 版本是 4.9.3
+                                                                    -> spring-boot 版本是 2.5.9
+                                                                    -> spring 版本是 5.3.18
+            - 我的 rocketmq 安装的是 4.9.4，这里使用 rocketmq-spring-boot-starter 2.2.2 基本没问题
+        rocketmq-spring-boot-starter 2.2.3 对应的 rocketmq 版本是 5.0.0 和安装的 rocketmq 版本差距很大，跨了一个大版本，不能使用这个版本
+         -->
+        <dependency>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-spring-boot-starter</artifactId>
+            <version>2.2.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.example</groupId>
+            <artifactId>my-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+
+</dependencies>
+
+
+</project>

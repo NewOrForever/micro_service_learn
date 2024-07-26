@@ -64,6 +64,11 @@ public class TransactionProducer {
                 SendResult sendResult = producer.sendMessageInTransaction(msg, null);
                 System.out.printf("%s%n", sendResult);
 
+                /**
+                 * 非必须
+                 * 1. 为了模拟网络延迟
+                 * 2. 为了防止消息发送过快，导致消费者处理不过来
+                 */
                 Thread.sleep(10);
             } catch (MQClientException | UnsupportedEncodingException e) {
                 e.printStackTrace();

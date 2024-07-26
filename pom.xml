@@ -37,6 +37,7 @@
     <module>elastic_search_learn_01</module>
     <module>spring_security_learn_04_json</module>
     <module>rocketmq_learn_01</module>
+    <module>rocketmq_learn_02</module>
     <module>openapiutil</module>
   </modules>
 
