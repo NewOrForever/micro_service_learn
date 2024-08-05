@@ -32,7 +32,7 @@ public class AclBaseClient {
      * 该账号不是管理员账号
      * 如果生产发送报错或者消费者没能正常消费，可以查看 acl 配置中该账号是否有对应的权限
      */
-    private static final String ACL_ACCESS_KEY = "RocketMQ";
+    private static final String ACL_ACCESS_KEY = "rocketmq2";
 
     private static final String ACL_SECRET_KEY = "12345678";
 

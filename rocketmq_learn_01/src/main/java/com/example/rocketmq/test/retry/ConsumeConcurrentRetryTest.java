@@ -1,10 +1,12 @@
 package com.example.rocketmq.test.retry;
 
+import com.example.rocketmq.acl.AclBaseClient;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
+import org.apache.rocketmq.client.consumer.rebalance.AllocateMessageQueueAveragely;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,10 +22,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @Date:2024/7/6 8:35
  * @Author:qs@1.com
  */
-public class ConsumeConcurrentRetryTest {
+public class ConsumeConcurrentRetryTest extends AclBaseClient {
     public static void main(String[] args) throws MQClientException {
         // 1. 创建消费者
-        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("ConsumeRetryGroup");
+        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("ConsumeRetryGroup", getAclRPCHook(), new AllocateMessageQueueAveragely());
         // 2. 设置nameserver地址
         consumer.setNamesrvAddr("192.168.50.65:9876");
         // 3. 设置订阅关系
@@ -34,7 +36,7 @@ public class ConsumeConcurrentRetryTest {
          *  - 并发消费模式下，消费重试间隔时间是阶梯式的，无法自定义设置
          *     10s, 30s, 1m, 2m, 3m, 4m, 5m, 6m, 7m, 8m, 9m, 10m, 20m, 30m, 1h, 2h，超过16次后，每次间隔2小时
          */
-        consumer.setMaxReconsumeTimes(5);
+        consumer.setMaxReconsumeTimes(3);
         // 4. 注册消息监听器
         consumer.registerMessageListener(new MessageListenerConcurrently() {
 

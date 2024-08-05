@@ -1,5 +1,6 @@
 package com.example.rocketmq.test.retry;
 
+import com.example.rocketmq.acl.AclBaseClient;
 import org.apache.rocketmq.client.consumer.MessageSelector;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
@@ -17,7 +18,7 @@ import java.nio.charset.StandardCharsets;
  * @Date:2024/5/20 14:03
  * @Author:qs@1.com
  */
-public class RetryProducer {
+public class RetryProducer extends AclBaseClient {
     private static final String TOPIC = "RetryTopicTest";
     private static final String[] TAGS = {"TagA", "TagB", "TagC"};
     private static final String MESSAGE_KEY = "OrderID188";
@@ -25,7 +26,7 @@ public class RetryProducer {
 
     public static void main(String[] args) throws MQClientException {
         // 1. 创建生产者
-        DefaultMQProducer producer = new DefaultMQProducer(PRODUCER_GROUP);
+        DefaultMQProducer producer = new DefaultMQProducer(PRODUCER_GROUP, getAclRPCHook());
         // 2. 设置nameserver地址
         producer.setNamesrvAddr("192.168.50.65:9876");
         // 3. 启动生产者

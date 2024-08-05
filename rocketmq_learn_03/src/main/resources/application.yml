@@ -1,0 +1,13 @@
+rocketmq:
+  name-server: 192.168.50.65:9876
+  producer:
+    group: SpringbootGroup
+    # 下面几个都设置成了默认值
+    sendMessageTimeout: 3000
+    retryTimesWhenSendFailed: 2
+    maxMessageSize: 4096
+    access-key: rocketmq2
+    secret-key: 12345678
+  consumer:
+    access-key: rocketmq2
+    secret-key: 12345678

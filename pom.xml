@@ -38,6 +38,7 @@
     <module>spring_security_learn_04_json</module>
     <module>rocketmq_learn_01</module>
     <module>rocketmq_learn_02</module>
+    <module>rocketmq_learn_03</module>
     <module>openapiutil</module>
   </modules>
 
