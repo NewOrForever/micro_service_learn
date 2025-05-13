@@ -1,0 +1,41 @@
+server:
+  port: 8011
+
+spring:
+  application:
+    name: integrated-storage  #微服务的名称
+  profiles:
+    active: dev
+
+  cloud:
+    nacos:
+      config:
+        server-addr: ${NACOS_SERVER_ADDR}  #配置中心的地址
+        namespace: 356eb662-4524-4d4b-b769-7410b0b3ef85
+        group: integrated-example
+        # dataid 为 yml 的文件扩展名配置方式
+        # `${spring.application.name}.${file-extension:properties}`
+        file-extension: yaml
+        #通用配置
+        shared-configs[0]:
+          data-id: datasource-config.yaml
+          group: integrated-example
+          refresh: true
+
+      discovery:
+        server-addr: ${NACOS_SERVER_ADDR} #注册中心的地址
+        namespace: 356eb662-4524-4d4b-b769-7410b0b3ef85 #环境隔离
+        group: integrated-example
+
+  #profile粒度的配置
+  #`${spring.application.name}-${profile}.${file-extension:properties}`
+
+
+seata:
+  application-id: ${spring.application.name}
+  tx-service-group: ${spring.application.name}-group
+  service:
+    vgroup-mapping:
+      integrated-storage-group: default
+    grouplist:
+      default: 192.168.50.99:8091

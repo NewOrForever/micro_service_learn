@@ -1,0 +1,37 @@
+server:
+  port: 8888
+
+
+spring:
+  application:
+    name: integrated-gateway  #微服务的名称
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_SERVER_ADDR} #注册中心的地址
+        namespace: 356eb662-4524-4d4b-b769-7410b0b3ef85 #环境隔离
+        group: integrated-example
+      config:
+        server-addr: ${NACOS_SERVER_ADDR}  #配置中心的地址
+        namespace: 356eb662-4524-4d4b-b769-7410b0b3ef85 # 不指定时使用默认命名空间 public
+        group: integrated-example
+        # dataid 为 yml 的文件扩展名配置方式
+        # `${spring.application.name}.${file-extension:properties}`
+        file-extension: yaml
+
+  #profile粒度的配置
+  #`${spring.application.name}-${profile}.${file-extension:properties}`
+
+
+  # @see org.springframework.cloud.commons.ConfigDataMissingEnvironmentPostProcessor.postProcessEnvironment
+  # @see org.springframework.cloud.commons.ConfigDataMissingEnvironmentPostProcessor.shouldProcessEnvironment
+  # @see com.alibaba.cloud.nacos.configdata.NacosConfigDataMissingEnvironmentPostProcessor.shouldProcessEnvironment
+  #   - 如果想要希望禁用此检查，可以设置：     spring.cloud.nacos.config.import-check.enabled=false 或 spring.cloud.nacos.config.enabled=false
+#  config:
+#    import: optional:nacos:integrated-gateway.yaml
+
+
+
+

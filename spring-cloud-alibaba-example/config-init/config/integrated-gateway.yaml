@@ -1,0 +1,28 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: integrated-order # 路由ID，全局唯一，建议和服务名称保持一致
+          uri: lb://integrated-order
+          predicates:
+            - Path=/order/create
+        - id: integrated-storage
+          uri: lb://integrated-storage
+          predicates:
+            - Path=/storage/
+        - id: integrated-account
+          uri: lb://integrated-account
+          predicates:
+            - Path=/account/
+        - id: praiseItemRocketMQ
+          uri: lb://integrated-provider
+          predicates:
+            - Path=/praise/rocketmq
+        - id: praiseItemSentinel
+          uri: lb://integrated-provider
+          predicates:
+            - Path=/praise/sentinel
+        - id: queryPraise
+          uri: lb://integrated-consumer
+          predicates:
+            - Path=/praise/query

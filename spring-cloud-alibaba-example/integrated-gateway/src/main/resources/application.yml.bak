@@ -1,0 +1,31 @@
+# 配置到 nacos 配置中心，应用启动时会自动加载
+spring:
+  application:
+    strategy: #discovery配置
+      gateway:
+        dynamic:
+          route:
+            enabled: true  # 开启网关订阅配置中心的动态路由策略,默认为false
+  cloud:
+#    discovery: #discovery配置，设置流量染色的元数据
+#      metadata:
+#        group: discovery-group  #组名必须配置
+
+    gateway:
+      routes:
+        - id: integrated-order   #路由ID，全局唯一
+          uri: lb://integrated-order
+          predicates:
+            - Path=/order/**
+        - id: integrated-account
+          uri: lb://integrated-account
+          predicates:
+            - Path=/account/**
+        - id: integrated-storage
+          uri: lb://integrated-storage
+          predicates:
+            - Path=/storage/**
+
+logging:
+  level:
+    org.springframework.cloud.gateway: debug

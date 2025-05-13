@@ -1,0 +1,11 @@
+
+
+spring:
+  cloud:
+#    discovery: #discovery配置，设置流量染色的元数据
+#      metadata:
+#        group: discovery-group  #组名必须配置
+
+logging:
+  level:
+    org.springframework.cloud.gateway: debug
