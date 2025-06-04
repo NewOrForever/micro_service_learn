@@ -11,11 +11,11 @@ spring:
     nacos:
       discovery:
         server-addr: ${NACOS_SERVER_ADDR} #注册中心的地址
-        namespace: 356eb662-4524-4d4b-b769-7410b0b3ef85 #环境隔离
+        namespace: 3e9cf74e-264e-4f39-831a-e8597ce28cfa #环境隔离
         group: integrated-example
       config:
         server-addr: ${NACOS_SERVER_ADDR}  #配置中心的地址
-        namespace: 356eb662-4524-4d4b-b769-7410b0b3ef85 # 不指定时使用默认命名空间 public
+        namespace: 3e9cf74e-264e-4f39-831a-e8597ce28cfa # 不指定时使用默认命名空间 public
         group: integrated-example
         # dataid 为 yml 的文件扩展名配置方式
         # `${spring.application.name}.${file-extension:properties}`

@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Configuration;
  * @Date:2022/6/20 14:08
  * @Author:qs@1.com
  */
-// 这个注解用的话就是全局配置了，注释掉去yml配置文件中对响应微服务进行局部配置
+// 这个注解用的话就是全局配置了，注释掉的话去yml配置文件中对相应微服务进行局部配置
 //@Configuration
 public class FeignConfig {
 

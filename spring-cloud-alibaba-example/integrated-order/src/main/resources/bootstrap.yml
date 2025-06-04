@@ -11,7 +11,7 @@ spring:
     nacos:
       config:
         server-addr: ${NACOS_SERVER_ADDR}  #配置中心的地址
-        namespace: 356eb662-4524-4d4b-b769-7410b0b3ef85
+        namespace: 3e9cf74e-264e-4f39-831a-e8597ce28cfa
         group: integrated-example
         # dataid 为 yml 的文件扩展名配置方式
         # `${spring.application.name}.${file-extension:properties}`
@@ -24,7 +24,7 @@ spring:
 
       discovery:
         server-addr: ${NACOS_SERVER_ADDR} #注册中心的地址
-        namespace: 356eb662-4524-4d4b-b769-7410b0b3ef85 #环境隔离
+        namespace: 3e9cf74e-264e-4f39-831a-e8597ce28cfa #环境隔离
         group: integrated-example
 
   #profile粒度的配置
@@ -33,9 +33,21 @@ spring:
 seata:
   application-id: ${spring.application.name}
   tx-service-group: ${spring.application.name}-group
-  service:
-    vgroup-mapping:
-      integrated-order-group: default
-    grouplist:
-      default: 192.168.50.99:8091
+
+  config:
+    type: nacos
+    nacos:
+      namespace: 3e9cf74e-264e-4f39-831a-e8597ce28cfa
+      serverAddr: ${NACOS_SERVER_ADDR}
+      dataId: "seataServer.properties"
+      group: "SEATA_GROUP"
+
+  # seata server 的注册中心配置
+  registry:
+    type: nacos
+    nacos:
+      namespace: 3e9cf74e-264e-4f39-831a-e8597ce28cfa
+      application: seata-server
+      server-addr: ${NACOS_SERVER_ADDR}
+
 
