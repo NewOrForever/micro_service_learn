@@ -89,6 +89,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     // 自定义登录页面配置
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        /**
+         * 使用了formLogin() 之后，会创建 FormLoginConfigurer -> 创建 UsernamePasswordAuthenticationFilter 对象
+         * 该对象会在 FormLoginConfigurer 执行 configure 方法时，添加到 {@link HttpSecurity#filters} 中
+         * 最后在 Security Filter Chain 过滤器链路中执行
+         *
+         * 如果不使用 formLogin()，则不会创建FormLoginConfigurer -> 也就不会创建 UsernamePasswordAuthenticationFilter 对象
+         * -> Security Filter Chain 过滤器链路中也就不会有 UsernamePasswordAuthenticationFilter 这个过滤器
+         */
         http.formLogin() // 自定义自己编写的登录页面 - 表单提交
                 .loginPage("/login.html") // 登录页面设置
                 /**
