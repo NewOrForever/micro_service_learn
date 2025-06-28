@@ -42,52 +42,6 @@ import org.springframework.web.server.ServerWebExchange;
 @Configuration
 public class GatewayConfig {
 
-    private final List<ViewResolver> viewResolvers;
-
-    private final ServerCodecConfigurer serverCodecConfigurer;
-
-    public GatewayConfig(ObjectProvider<List<ViewResolver>> viewResolversProvider,
-                         ServerCodecConfigurer serverCodecConfigurer) {
-        this.viewResolvers = viewResolversProvider.getIfAvailable(Collections::emptyList);
-        this.serverCodecConfigurer = serverCodecConfigurer;
-    }
-
-//    @Bean
-//    @Order(Ordered.HIGHEST_PRECEDENCE)
-//    public GlobalFilter sentinelGatewayFilter() {
-//        return new SentinelGatewayFilter();
-//    }
-
-//    @PostConstruct
-//    private void initGatewayRules() {
-//        Set<GatewayFlowRule> rules = new HashSet<>();
-//        rules.add(
-//                new GatewayFlowRule("praiseItemSentinel").setCount(5).setIntervalSec(1));
-//        GatewayRuleManager.loadRules(rules);
-//    }
-
-//    @Bean
-//    @Order(Ordered.HIGHEST_PRECEDENCE)
-//    public SentinelGatewayBlockExceptionHandler sentinelGatewayBlockExceptionHandler() {
-//        // Register the block exception handler for Spring Cloud Gateway.
-//        return new SentinelGatewayBlockExceptionHandler(viewResolvers,
-//                serverCodecConfigurer);
-//    }
-
-//    @PostConstruct
-//    public void initBlockHandlers() {
-//        BlockRequestHandler blockRequestHandler = new BlockRequestHandler() {
-//            @Override
-//            public Mono<ServerResponse> handleRequest(ServerWebExchange serverWebExchange,
-//                                                      Throwable throwable) {
-//                return ServerResponse.status(HttpStatus.OK)
-//                        .contentType(MediaType.APPLICATION_JSON_UTF8)
-//                        .body(BodyInserters.fromObject("此接口被限流了"));
-//            }
-//        };
-//        GatewayCallbackManager.setBlockHandler(blockRequestHandler);
-//    }
-
     @Bean
     public CorsWebFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

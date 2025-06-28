@@ -27,6 +27,21 @@ spring:
         namespace: 3e9cf74e-264e-4f39-831a-e8597ce28cfa #环境隔离
         group: integrated-example
 
+    sentinel:
+      transport:
+        dashboard: localhost:8080 # Sentinel 控制台地址
+        port: 8719 # 和控制台进行数据交互的端口
+      datasource:
+        flow-rules:
+          nacos:
+            server-addr: ${NACOS_SERVER_ADDR}
+            namespace: 3e9cf74e-264e-4f39-831a-e8597ce28cfa
+            group-id: SENTINEL_GROUP
+            data-id: ${spring.application.name}-flow-rules
+            data-type: json
+            rule-type: flow
+
+
   #profile粒度的配置
   #`${spring.application.name}-${profile}.${file-extension:properties}`
 

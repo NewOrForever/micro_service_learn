@@ -1,5 +1,6 @@
 package com.example.demo.config;
 
+import com.alibaba.cloud.sentinel.gateway.scg.SentinelSCGAutoConfiguration;
 import com.alibaba.csp.sentinel.adapter.gateway.common.SentinelGatewayConstants;
 import com.alibaba.csp.sentinel.adapter.gateway.common.api.ApiDefinition;
 import com.alibaba.csp.sentinel.adapter.gateway.common.api.ApiPathPredicateItem;
@@ -35,7 +36,9 @@ import java.util.*;
  *  - 控制台的流控规则中没有数据，但是通过调用接口测试发现 -> 流控规则是存在的
  * 解决：启动时需要加上 -Dcsp.sentinel.app.type=1 这个参数
  * 综上：这种方式通常是不会去用的 -> 注释掉adapter依赖，引入spring-cloud-alibaba-sentinel-gateway依赖，
- *      这个Configuration注释掉 -> 重启会发现控制台的有了api管理菜单项了（经测试：sentinel也要重启才有这个api管理菜单）
+ *      这个Configuration注释掉 -> 重启会发现控制台有了api管理菜单项了（经测试：sentinel也要重启才有这个api管理菜单）
+ *      spring-cloud-alibaba-sentinel-gateway 具体源码见 {@link SentinelSCGAutoConfiguration} 和我当前的 {@link GatewayConfiguration}
+ *      基本上是差不多的，网关流控的核心还是 {@link SentinelGatewayFilter} 和 {@link SentinelGatewayBlockExceptionHandler} 这两个类
  */
 // @Configuration
 public class GatewayConfiguration {

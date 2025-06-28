@@ -30,6 +30,10 @@ public class Result<T> {
                 ResultEnum.COMMON_FAILED.getMessage(), null);
     }
 
+    public static Result<?> failed(Integer code, String message) {
+        return new Result<>(code, message, null);
+    }
+
     public static Result<?> failed(String message) {
         return new Result<>(ResultEnum.COMMON_FAILED.getCode(), message, null);
     }
