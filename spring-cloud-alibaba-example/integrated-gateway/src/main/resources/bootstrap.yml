@@ -43,6 +43,8 @@ spring:
             data-type: json
             rule-type: gw-api-group
 
+#暴露actuator端点
+
 
   #profile粒度的配置
   #`${spring.application.name}-${profile}.${file-extension:properties}`
@@ -55,6 +57,14 @@ spring:
 #  config:
 #    import: optional:nacos:integrated-gateway.yaml
 
+## 要引入 spring-boot-starter-actuator 依赖
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        # 访问 sentinel 暴露的端点
+#        # http://localhost:8888/actuator/sentinel
+#        include: '*'
 
 
 
