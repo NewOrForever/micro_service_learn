@@ -7,6 +7,9 @@ import com.example.account.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 /**
  * ClassName:OrderController
  * Package:com.example.order.controller
@@ -36,6 +39,11 @@ public class AccountController {
 
     @GetMapping("/")
     public Result<?> getRemainAccount(String userId) {
+        return accountService.getRemainAccount(userId);
+    }
+
+    @GetMapping("/balance")
+    public Result<?> balance(String userId) {
         return accountService.getRemainAccount(userId);
     }
 
